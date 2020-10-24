@@ -44,20 +44,24 @@ def UCAS_login():
     except IOError as e:
         print(e)
     session = requests.session()
-    login_url = 'http://onestop.ucas.ac.cn/Ajax/Login/0'#提交信息地址，这个地址不需要验证码
-    headers=  {
+    login_url = 'https://onestop.ucas.ac.cn/Ajax/Login/0'#提交信息地址，这个地址不需要验证码
+    headers = {
                 'Host': 'onestop.ucas.ac.cn',
                 "Connection": "keep-alive",
                 'Referer': 'http://onestop.ucas.ac.cn/home/index',
                 'X-Requested-With': 'XMLHttpRequest',
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36",
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36",
             }
     post_data = { # 构造表单数据
                 "username": username,
                 "password": password,
                 "remember": 'checked',
             }
+    #post_data = f"username={username}&password={password}&remember=checked"
+
     html = session.post(login_url, data=post_data, headers=headers).text #请求，并建立session
+    save_html(html)
     res = json.loads(html)  #注意区分：登录地址、提交数据地址、返回的地址这三点，这里打开返回的地址
     html = session.get(res['msg']).text
     print('登录系统成功！')
